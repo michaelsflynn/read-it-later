@@ -1,3 +1,4 @@
-const Articles = require('./articles')
-
-module.exports = Articles
+// Models Index
+exports.Articles = require('./articles')
+exports.Sources = require('./sources')
+exports.TopArticles = require('./topArticles')

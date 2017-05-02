@@ -15,7 +15,9 @@
     "ejs": "^2.5.6",
     "express": "^4.15.2",
     "mongoose": "^4.9.6",
-    "node-readability": "^2.2.0"
+    "node-fetch": "^1.6.3",
+    "node-readability": "^2.2.0",
+    "promise": "^7.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
