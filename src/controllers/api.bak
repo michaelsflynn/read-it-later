@@ -1,0 +1,64 @@
+const Sources = require('../models/sources')
+const TopArticles = require('../models/topArticles')
+const fetch = require('node-fetch')
+
+exports.get = (req, res, next) => {
+  console.log('Param: ', req.params.data)
+  if (req.params.data === 'src') {
+    fetch('https://newsapi.org/v1/sources?language=en')
+    .then((response) => response.json())
+    .then((data) => {
+      Sources.remove({}, (err) => console.error(err))
+      data.sources.forEach((src) => {
+        Sources.create({
+          id: src.id,
+          name: src.name,
+          description: src.description,
+          url: src.url,
+          category: src.category,
+          language: src.language,
+          country: src.country,
+          urlsToLogos: {
+            small: src.urlsToLogos.small,
+            medium: src.urlsToLogos.medium,
+            large: src.urlsToLogos.large
+          },
+          sortBysAvailable: src.sortBysAvailable,
+          fetchdata: false
+        }
+        , (err, src) => {
+          (err) ? res.send(err)
+          : console.log('Source: ', src.name)
+        }) // create
+      }) // forEach
+    }) // then
+    .catch((err) => res.send(err))
+    res.send('Retrieved Sources from newsapi.org')
+    res.end()
+  }
+  if (req.params.data === 'top') {
+    fetch('https://newsapi.org/v1/articles?source=nfl-news&sortBy=latest&apiKey=c6a6b6c8a55d4ddcacd7ca0a32c8f20a')
+    .then((response) => response.json())
+    .then((data) => {
+      TopArticles.remove({}, (err) => console.error(err))
+      data.articles.forEach((art) => {
+        TopArticles.create({
+          id: 'NFL',
+          author: art.author,
+          title: art.title,
+          description: art.description,
+          url: art.url,
+          urlToImage: art.urlToimage,
+          publishedAt: art.publishedAt
+        }
+        , (err, topArt) => {
+          (err) ? res.send(err)
+          : console.log('Title: ', topArt.title)
+        }) // create
+      }) // forEach
+    }) // then
+    .catch((err) => res.send(err))
+    res.send('Retrieved Top Articles from newsapi.org')
+    res.end()
+  }// if
+}// get

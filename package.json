@@ -2,10 +2,10 @@
   "name": "tldr",
   "version": "1.0.0",
   "description": "TLDR Application",
-  "main": "app.js",
+  "main": "./src/app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
+    "start": "node ./src/app.js",
+    "dev": "webpack -w & nodemon ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Michael Flynn",
@@ -17,9 +17,21 @@
     "mongoose": "^4.9.6",
     "node-fetch": "^1.6.3",
     "node-readability": "^2.2.0",
-    "promise": "^7.1.1"
+    "promise": "^7.1.1",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.4",
+    "redux": "^3.6.0"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.1",
+    "html-webpack-plugin": "^2.28.0",
+    "json-loader": "^0.5.4",
+    "nodemon": "^1.11.0",
+    "style-loader": "^0.17.0",
+    "webpack": "^2.4.1"
   }
 }

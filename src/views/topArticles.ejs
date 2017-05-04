@@ -1,0 +1,11 @@
+<% include head %>
+<ul>
+<% topArticles.forEach((src) => { %>
+<li>
+<a href="<%= src.url %>">
+<%= src.title %>
+</a>
+</li>
+<% }) %>
+</ul>
+<% include foot %>
