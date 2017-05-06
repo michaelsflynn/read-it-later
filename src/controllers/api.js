@@ -1,5 +1,6 @@
 const Sources = require('../models/sources')
 const TopArticles = require('../models/topArticles')
+const Categories = require('../models/categories')
 const fetch = require('node-fetch')
 
 exports.get = (req, res, next) => {
@@ -8,6 +9,12 @@ exports.get = (req, res, next) => {
     fetch('https://newsapi.org/v1/sources?language=en')
     .then((response) => response.json())
     .then((data) => loadSources(data))
+    .then((response) => res.send(response))
+    .catch((err) => res.send(err.toString()))
+  }
+  if (req.params.data === 'cat') {
+    Sources.distinct('category')
+    .then((data) => writeCategories(data))
     .then((response) => res.send(response))
     .catch((err) => res.send(err.toString()))
   }
@@ -72,6 +79,43 @@ function writeSourceDoc (src) {
   } // create callback
   ) // create close
 }
+
+// **************************************************
+// Helper Functions not Exported - Loading Categories
+// **************************************************
+
+function writeCategories (data) {
+  console.log('Running writeCategories Function')
+  return new Promise(
+    function (resolve, reject) {
+      if (data.length > 0) {
+        console.log('Categories Data Available')
+        resolve(
+          Categories.remove({}, (err, count) => { // remove callback
+            (err) ? err
+          : console.log('Categories Documents Removed:', count.result.n)
+          }) // remove close
+        .then(() => {
+          data.sort().forEach((cat) => { // forEach
+            Categories.create({
+              id: cat,
+              category: cat
+            }
+            , (err, src) => {
+            (err) ? console.log(err)
+              : console.log('Category:', cat)
+            } // create callback
+          ) // create close
+          }) // forEach close
+          return 'Categories Documents Written to MongoDB'
+        }) // then close
+        .catch((err) => err) // catch
+        ) // resolve
+      } // if
+      reject(new Error('Categories Did Not Return New Data'))
+    } // function promise close
+  ) // Promise close
+} // writeCategories close
 
 // *************************************************
 // Helper Functions not Exported - Load Top Articles
