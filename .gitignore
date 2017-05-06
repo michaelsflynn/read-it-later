@@ -1,0 +1,29 @@
+# Don't check auto-generated stuff into git
+coverage
+build
+node_modules
+stats.json
+logs
+*.log
+npm-debug.log
+
+# Compiled Webpack Files
+dist
+
+# Cruft
+.DS_Store
+.idea
+
+# Backups
+*.bak
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# node-waf configuration
+.lock-wscript
