@@ -4,9 +4,6 @@ exports.get = (req, res, next) => {
   TopArticles.find({}, (err, topArticles) => {
     (err) ? console.error(err)
     : res.format({
-      html: () => {
-        res.render('topArticles.ejs', { topArticles: topArticles })
-      },
       json: () => {
         res.send(topArticles)
       }
