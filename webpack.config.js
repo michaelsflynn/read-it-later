@@ -1,16 +1,10 @@
 // webpack.config.js for JSX and CSS
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: path.join(__dirname, '/src/index.html'),
-  filename: 'index.html',
-  inject: 'body'
-})
 
 module.exports = {
-  entry: [
-    './src/index.js'
-  ],
+  entry: {
+    app: './src/index.js'
+  },
   module: {
     loaders: [
       {test: /\.js$/, include: path.join(__dirname, '/src'), loader: 'babel-loader'},
@@ -19,11 +13,9 @@ module.exports = {
     ]
   },
   output: {
-    filename: 'app_bundle.js',
-    path: __dirname + '/dist',
-    publicPath: '/dist'
+    filename: '[name].bundle.js',
+    path: path.join(__dirname, '/dist')
   },
-  plugins: [HTMLWebpackPluginConfig],
   node: {
     console: true,
     fs: 'empty',
