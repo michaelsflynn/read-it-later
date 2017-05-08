@@ -1,8 +1,10 @@
-const express = require('express')
+// Setup Server
+const Express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
-const server = express()
+const server = Express()
 
+// setup Database
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost:27017/tldrdb')
 mongoose.Promise = require('promise')
@@ -13,13 +15,16 @@ db.once('open', () => {
   console.log('DB connected successfully and APP listening at: ' + Date())
 })
 
-// Controller files for API and Data Management
-const controllers = require('./src/controllers')
-
+// Config for Request Handling
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({extended: true}))
+server.use(Express.static('dist'))
+// server.use(handleRender)
 
-server.use(express.static('dist'))
+// Controllers/Routes
+const controllers = require('./src/controllers')
+
+server.get('/', controllers.handleRender.get) // Main Rendering Get using Redux Store
 
 server.get('/articles', controllers.articles.get)
 server.post('/articles', controllers.articles.post)
@@ -30,9 +35,5 @@ server.get('/sources', controllers.sources.get)
 server.get('/topArticles', controllers.topArticles.get)
 server.get('/categories', controllers.categories.get)
 server.get('/api/:data', controllers.api.get)
-
-server.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, '/dist/index.html'))
-})
 
 module.exports = server
