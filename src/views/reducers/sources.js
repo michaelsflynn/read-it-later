@@ -1,27 +1,15 @@
 // Reducers for Sources
+const initialState = { srcFilter: 'hacker-news', sources: [] }
 
-const setSources = (state = [], action) => {
+const setSources = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_SRC_FILTER':
-      return state.map(src =>
-        setSelectedSources(src, action)
-      )
+    return Object.assign({}, state, {
+      srcFilter: action.srcFilter
+    })
     default:
       return state
   }
 }
 
 export default setSources
-
-const setSelectedSources = (state = {}, action) => {
-  switch (action.type) {
-    case 'SET_SRC_FILTER':
-      if (state.id === action.srcFilter)
-        return Object.assign({}, state, {
-          fetchdata: true
-        })
-        return state
-    default:
-      return state
-  }
-}
