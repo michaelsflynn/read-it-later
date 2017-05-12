@@ -5,21 +5,13 @@ import CategoryList from '../components/CategoryList'
 
 const mapStateToProps = (state) => {
   return {
-    categories: state.categories
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onCatClick: (id) => {
-      dispatch(setCatFilter(id))
-    }
+    catFilter: state.setCategory.catFilter,
+    categories: state.setCategory.categories
   }
 }
 
 const VisibleCategoryList = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(CategoryList)
 
 export default VisibleCategoryList
