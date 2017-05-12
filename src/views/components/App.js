@@ -1,15 +1,22 @@
-// Component - Category List
+// Component - Main App
 
 import React from 'react'
-import CategoryList from './CategoryList'
+import Header from '../components/Header'
+import VisibleCategoryList from '../containers/VisibleCategoryList'
+import VisibleSourceList from '../containers/VisibleSourceList'
+import VisibleArticleList from '../containers/VisibleArticleList'
+import Footer from '../components/Footer'
 
 class App extends React.Component {
   render () {
     return (
-    <div>
-      <h1>Hello From React</h1>
-      <CategoryList category={['Top News']} />
-    </div>
+      <div>
+        <Header />
+        <VisibleCategoryList />
+        <VisibleSourceList />
+        <VisibleArticleList />
+        <Footer />
+      </div>
     )
   }
 }
