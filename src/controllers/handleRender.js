@@ -7,24 +7,35 @@ import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
 import appReducers from '../views/reducers'
 import App from '../views/components/App'
+import Categories from '../models/categories'
+import Sources from '../models/sources'
 
 exports.get = (req, res) => {
+  // Get Initial State for the Store
+  setInitialState(['setCategory', 'setSources'])
+  .then((initialState) => {
     // Create a new Redux store instance
-  const store = createStore(appReducers)
+    const store = createStore(appReducers, initialState)
 
     // Render the component to a string
-  const html = renderToString(
-    <Provider store={store}>
-      <App />
-    </Provider>
-    )
+    const html = renderToString(
+      <Provider store={store}>
+        <App />
+      </Provider>
+      )
 
     // Grab the initial state from our Redux store
-  const preloadedState = store.getState()
+    const preloadedState = store.getState()
 
     // Send the rendered page back to the client
-  res.send(renderFullPage(html, preloadedState))
+    res.send(renderFullPage(html, preloadedState))
+  })
+  .catch(err => err)
 }
+
+// ************************************************************
+// Helper Functions to Render Page and Setting Initial State
+// ************************************************************
 
 function renderFullPage (html, preloadedState) {
   return `
@@ -43,4 +54,28 @@ function renderFullPage (html, preloadedState) {
         </body>
       </html>
       `
+}
+
+function setInitialState (arr) {
+  return new Promise(
+    function (resolve, reject) {
+      const output = []
+      Categories.find().select('id category')
+      .then(catData => {
+        output.push(catData)
+      }) // then
+      .then(() => {
+        return Sources.find().select('id name category description url').exec()
+      }) // then
+      .then(srcData => {
+        output.push(srcData)
+        const initialState = {
+          setCategory: {catFilter: 'technology', categories: output[0]},
+          setSources: {srcFilter: 'hacker-news', sources: output[1]},
+          setArticles: {articles: []}
+        }
+        resolve(initialState)
+      }) // then
+      .catch(err => reject(err))
+  }) // promise
 }
