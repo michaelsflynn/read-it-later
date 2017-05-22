@@ -5,6 +5,7 @@
 export const SET_CAT_FILTER = 'SET_CAT_FILTER'
 export const SET_SRC_FILTER = 'SET_SRC_FILTER'
 export const SET_ARTICLES = 'SET_ARTICLES'
+export const SHOW_ARTICLES = 'SHOW_ARTICLES'
 
 /*
  * action creators
@@ -25,4 +26,8 @@ export function setArt (source, json) {
     articles: json.articles,
     receivedAt: Date.now()
   }
+}
+
+export function showArticles (bool) {
+  return { type: SHOW_ARTICLES, showArticles: bool }
 }
