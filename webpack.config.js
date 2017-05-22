@@ -9,7 +9,20 @@ module.exports = {
     loaders: [
       {test: /\.js$/, include: path.join(__dirname, '/src'), loader: 'babel-loader'},
       {test: /\.json$/, include: path.join(__dirname, '/src'), loader: 'json-loader'},
-      {test: /\.css$/, loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'}
+      // {test: /\.css$/, loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'},
+      {test: /\.scss$/,
+        use: [
+          { loader: 'file-loader', options: { name: '[name].css' } },
+          { loader: 'sass-loader',
+            options: {
+              outputStyle: 'compressed',
+              includePaths: [
+                './node_modules'
+              ]
+            }
+          }
+        ]
+      }
     ]
   },
   output: {
