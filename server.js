@@ -15,7 +15,7 @@ db.once('open', () => {
   console.log('DB connected successfully and APP listening at: ' + Date())
 })
 
-// Config for Request Handling
+// Config for Request Handling middleware
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({extended: true}))
 server.use(Express.static('dist'))
@@ -24,16 +24,16 @@ server.use(Express.static('dist'))
 // Controllers/Routes
 const controllers = require('./src/controllers')
 
-server.get('/', controllers.handleRender.get) // Main Rendering Get using Redux Store
+// main controller for initial render of html and redux initial state
+server.get('/', controllers.handleRender.get)
 
+// api loads Sources and rolls up Categories
+server.get('/api/:data', controllers.api.get)
+
+// crud for saved articles
 server.get('/articles', controllers.articles.get)
 server.post('/articles', controllers.articles.post)
 server.delete('/articles/:id', controllers.articles.del)
 server.put('/articles/:id', controllers.articles.upd)
-
-server.get('/sources', controllers.sources.get)
-server.get('/topArticles', controllers.topArticles.get)
-server.get('/categories', controllers.categories.get)
-server.get('/api/:data', controllers.api.get)
 
 module.exports = server
