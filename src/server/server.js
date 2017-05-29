@@ -19,10 +19,9 @@ db.once('open', () => {
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({extended: true}))
 server.use(Express.static('dist'))
-// server.use(handleRender)
 
 // Controllers/Routes
-const controllers = require('./src/server/controllers')
+const controllers = require('./controllers')
 
 // main controller for initial render of html and redux initial state
 server.get('/', controllers.handleRender.get)

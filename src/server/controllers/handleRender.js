@@ -95,34 +95,7 @@ function renderFullPage (html, preloadedState) {
   </head>
   <body class="loading">
     <div id="content" tabindex="-1" style="outline: none;">
-      <svg id="logo" viewBox="0 0 182 182" version="1.1" role="img">
-        <path role="presentation"
-          d="M 91,91 m 0,-82 a 82,82 0 1,1 0,164 a 82,82 0 1,1 0,-164"
-          stroke-width="18" stroke="#865CD6" fill="none"></path>
-      </svg>
-      <script>
-      var c = document.getElementById("content");
-      for (var i = 0; i < 100; i += 1) {
-        c.insertAdjacentHTML('beforeend', '<div class="t off"></div>');
-      }
-      var timer = setInterval(function () {
-        var again = false;
-        if (document.body.classList.contains('loading')) {
-          var ts = c.querySelectorAll('div.t.off');
-          if (ts.length > 0) {
-            var index = Math.floor(Math.random() * ts.length);
-            ts[index].classList.remove('off');
-            ts[index].classList.add('on');
-            if (ts.length > 1) {
-              again = true;
-            }
-          }
-        }
-        if (! again) {
-          clearInterval(timer);
-        }
-      }, 100)
-      </script>
+      ${html}
     </div>
     <script>
       window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
