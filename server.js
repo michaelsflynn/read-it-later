@@ -22,7 +22,7 @@ server.use(Express.static('dist'))
 // server.use(handleRender)
 
 // Controllers/Routes
-const controllers = require('./src/controllers')
+const controllers = require('./src/server/controllers')
 
 // main controller for initial render of html and redux initial state
 server.get('/', controllers.handleRender.get)
