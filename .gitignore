@@ -7,8 +7,9 @@ logs
 *.log
 npm-debug.log
 
-# Compiled Webpack Files
-dist
+
+# Config Files that contain keys/pass/secret phrases
+config
 
 # Cruft
 .DS_Store
