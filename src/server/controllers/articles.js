@@ -1,43 +1,30 @@
 const Articles = require('../models/articles')
 const read = require('node-readability')
 
-// exports.post = (req, res, next) => {
-//   articles.create({title: req.body.title, author: req.body.author},
-//   (err, article) => { if (err) console.error(err) })
-//   res.send('Article Saved')
-// }
-
 exports.post = (req, res, next) => {
+  console.log('Article Post Req:', req.body)
   read(req.body.url, (err, result) => {
-    (err) ? console.error(err) : Articles.create({title: result.title, body: result.content},
+    (err) ? console.error(err) : Articles.create({title: result.title, body: result.textBody, user: req.body.user},
     (err, article) => {
       (err) ? console.error(err) : console.log('Artical Saved')
     })
   })
-  res.send('Formatted Saved Article')
+  res.send('Formatted and Saved Article')
 }
 
 exports.get = (req, res, next) => {
-  Articles.find({}, (err, articles) => {
-    (err) ? console.error(err)
-    : res.format({
-      html: () => {
-        res.render('articles.ejs', { articles: articles })
-      },
-      json: () => {
-        res.send(articles)
-      }
-    })
+  Articles.find({user: req.params.email}, (err, articles) => {
+    (err)
+    ? console.error(err)
+    : res.send(articles)
   })
-  console.log('Retrieved Saved Articles')
 }
 
 exports.del = (req, res, next) => {
-  // console.log(req.params)
+  console.log('Delete Request:', req)
   Articles.findByIdAndRemove(req.params.id, (err, doc) => {
-    (err) ? console.error(err) : console.log(doc)
+    (err) ? console.error(err) : res.send('Deleted Saved Article For You!')
   })
-  res.send('Deleted Document')
 }
 
 exports.upd = (req, res, next) => {
