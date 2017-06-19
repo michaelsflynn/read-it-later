@@ -3,13 +3,12 @@ const Schema = mongoose.Schema
 
 // create a schema
 const articleSchema = new Schema({
+  user: String,
   title: String,
-  author: String,
-  body: String,
-  website: String,
-  created_at: Date,
-  updated_at: Date
-})
+  body: String
+},
+  { timestamps: true }
+)
 
 // Create a mongoose model using schema
 const Articles = mongoose.model('Articles', articleSchema)
