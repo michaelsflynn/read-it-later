@@ -1,49 +1,72 @@
 // Component - Main App
-
+// Library Dependencies
 import React from 'react'
+import { connect } from 'react-redux'
+import { Route, Redirect, Switch, withRouter } from 'react-router-dom'
 import App from 'grommet/components/App'
-import ArticleIcon from 'grommet/components/icons/base/Article'
-import Button from 'grommet/components/Button'
-import CloudIcon from 'grommet/components/icons/base/Cloud'
-import Header from 'grommet/components/Header'
-import Footer from 'grommet/components/Footer'
-import SocialShare from 'grommet/components/SocialShare'
-import Split from 'grommet/components/Split'
-import Title from 'grommet/components/Title'
-import CategorySideBar from '../containers/CategorySideBar'
-import SourceTiles from '../containers/SourceTiles'
-import ArticlesLayer from '../containers/ArticlesLayer'
+// Custom Dependencies
+import Admin from './Admin'
+import Member from './Member'
+import NotFoundPage from './NotFoundPage'
+import Login from '../containers/Login'
+import Register from '../containers/Register'
 
+// ***************************************************
+// Setup Wrappers for public vs. private Routes
+// ***************************************************
+const PrivateRoute = ({component: Component, authenticated, ...rest}) => {
+  console.log('PrivateRoute Props:', authenticated, ...rest)
+  return (
+    <Route {...rest} render={props => (
+      authenticated === true
+       ? (<Component {...props} />)
+       : (<Redirect to={{
+         pathname: '/',
+         state: { from: props.location }
+       }} />
+      )
+    )} />
+  )
+}
+
+const PublicRoute = ({component: Component, authenticated, ...rest}) => {
+  console.log('PublicRoute Props:', authenticated, ...rest)
+  return (
+    <Route {...rest} render={props => (
+      authenticated === false
+       ? (<Component {...props} />)
+       : (<Member />
+      )
+    )} />
+  )
+}
+
+// **********************************************************
+// Main class establishes routes
+// **********************************************************
 class Main extends React.Component {
   render () {
+    console.log('Main Component Rendered')
     return (
       <App>
-        <Header direction='row' justify='between' size='large'
-          pad={{ horizontal: 'medium', between: 'small' }}>
-          <Title size='large' pad={{ horizontal: 'medium' }}>
-            <ArticleIcon size='large' />
-            <span>Articly: Top News</span>
-          </Title>
-          <SocialShare type='twitter' link='www.twitter.com' />
-          <SocialShare type='facebook' link='www.facebook.com' />
-          <SocialShare type='linkedin' link='www.linkedin.com' />
-          <Button label='Log Out' onClick={() => window.alert('Thank You')} />
-        </Header>
-        <Split flex='right'>
-          <CategorySideBar />
-          <SourceTiles />
-        </Split>
-        <Footer direction='row' justify='center' size='large'
-          pad={{ horizontal: 'medium', between: 'small' }}>
-          <Title size='medium' pad={{ horizontal: 'medium' }}>
-            <CloudIcon />
-            <span>Powered by newsAPI.org</span>
-          </Title>
-        </Footer>
-        <ArticlesLayer />
+        <Switch>
+          <PublicRoute exact path='/' component={Login} authenticated={this.props.authenticated} />
+          <PublicRoute path='/register' component={Register} authenticated={this.props.authenticated} />
+          <PrivateRoute path='/member' component={Member} authenticated={this.props.authenticated} />
+          <PrivateRoute path='/admin' component={Admin} authenticated={this.props.authenticated} />
+          <Route component={NotFoundPage} />
+        </Switch>
       </App>
     )
   }
 }
 
-export default Main
+function mapStateToProps (state) {
+  return {
+    authenticated: state.setAuth.authenticated,
+    catFilter: state.setCategory.catFilter,
+    srcFilter: state.setSources.srcFilter
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(Main))
