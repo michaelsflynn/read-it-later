@@ -2,25 +2,33 @@
 // Uses Redux Store to provide initial data
 
 import React from 'react'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
-import appReducers from '../../client/reducers'
-import Main from '../../client/components/Main'
+import { StaticRouter } from 'react-router-dom'
+import reduxThunk from 'redux-thunk'
+import reducers from '../../client/reducers'
 import Categories from '../models/categories'
 import Sources from '../models/sources'
+import Main from '../../client/components/Main'
 
 exports.get = (req, res) => {
   // Get Initial State for the Store
   setInitialState(['setCategory', 'setSources'])
   .then((initialState) => {
+    // console.log('Initial State:', initialState)
     // Create a new Redux store instance
-    const store = createStore(appReducers, initialState)
+    const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore)
+    const store = createStoreWithMiddleware(reducers, initialState)
 
+    // if we got props then we matched a route and can render
     // Render the component to a string
+    const context = {}
     const html = renderToString(
-      <Provider store={store}>
-        <Main />
+      <Provider store={store} >
+        <StaticRouter location={req.url} context={context} >
+          <Main />
+        </StaticRouter>
       </Provider>
       )
 
@@ -28,8 +36,16 @@ exports.get = (req, res) => {
     const preloadedState = store.getState()
 
     // Send the rendered page back to the client
-    res.send(renderFullPage(html, preloadedState))
-  })
+    console.log('handleRender urls (req, context):', req.url, context.url)
+    if (context.url) {
+      res.writeHead(301, {
+      Location: context.url
+      })
+      res.end()
+    } else {
+      res.send(renderFullPage(html, preloadedState))
+    }
+  }) // then
   .catch(err => err)
 }
 
@@ -94,9 +110,7 @@ function renderFullPage (html, preloadedState) {
     </style>
   </head>
   <body class="loading">
-    <div id="content" tabindex="-1" style="outline: none;">
-      ${html}
-    </div>
+    <div id="content" tabindex="-1" style="outline: none;">${html}</div>
     <script>
       window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
     </script>
@@ -122,10 +136,11 @@ function setInitialState (arr) {
         const initialState = {
           setCategory: {catFilter: 'technology', categories: output[0]},
           setSources: {srcFilter: 'hacker-news', sources: output[1]},
-          setArticles: {showArticles: false, articles: []}
+          setArticles: {showArticles: true, articles: [], savedArticles: []},
+          setAuth: {error: '', message: '', content: '', authenticated: false, emai: '', role: ''}
         }
         resolve(initialState)
       }) // then
       .catch(err => reject(err))
-  }) // promise
+    }) // promise
 }
