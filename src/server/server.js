@@ -1,38 +1,29 @@
-// Setup Server
-const Express = require('express')
-const bodyParser = require('body-parser')
-const path = require('path')
-const server = Express()
-
-// setup Database
+// Import required modules
+const express = require('express')
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/tldrdb')
 mongoose.Promise = require('promise')
+const bodyParser = require('body-parser')
+const config = require('./config/main')
+const router = require('./router')
+
+// Initialize Server and DB
+const server = express()
+mongoose.connect(config.database)
+
+// Start Server and DB
 const db = mongoose.connection
-db.on('error', console.error.bind(console, 'db connection error:'))
+db.on('error', console.error.bind(console, 'DB Connection Error:'))
 db.once('open', () => {
-  server.listen(process.env.PORT || 3000)
+  server.listen(config.port)
   console.log('DB connected successfully and APP listening at: ' + Date())
 })
 
-// Config for Request Handling middleware
+// Setup Request Handling
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({extended: true}))
-server.use(Express.static('dist'))
+server.use(express.static('dist'))
 
-// Controllers/Routes
-const controllers = require('./controllers')
-
-// main controller for initial render of html and redux initial state
-server.get('/', controllers.handleRender.get)
-
-// api loads Sources and rolls up Categories
-server.get('/api/:data', controllers.api.get)
-
-// crud for saved articles
-server.get('/articles', controllers.articles.get)
-server.post('/articles', controllers.articles.post)
-server.delete('/articles/:id', controllers.articles.del)
-server.put('/articles/:id', controllers.articles.upd)
+// Call router to connect the routing of requests
+router(server)
 
 module.exports = server
