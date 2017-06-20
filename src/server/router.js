@@ -1,6 +1,7 @@
 const controllers = require('./controllers')
 const express = require('express')
 const passport = require('passport')
+const passportService = require('./config/passport')
 
 // Middleware to require login/auth
 // const requireAuth = passport.authenticate('jwt', { session: false })
@@ -36,5 +37,4 @@ module.exports = (server) => {
   // server.post('/articles', controllers.articles.post)
   // server.delete('/articles/:id', controllers.articles.del)
   // server.put('/articles/:id', controllers.articles.upd)
-
 }
